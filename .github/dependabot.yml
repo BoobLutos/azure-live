@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: terraform
+    directories:
+      - /platform/governance
+      - /platform/management
+      - /platform/connectivity
+      - /landingzones/dev/baseline
+      - /landingzones/dev/network
+      - /landingzones/prod/baseline
+      - /landingzones/prod/network
+    schedule:
+      interval: weekly
+    groups:
+      providers:
+        patterns: ["*"]

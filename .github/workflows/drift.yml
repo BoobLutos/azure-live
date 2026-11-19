@@ -1,0 +1,57 @@
+name: drift-check
+
+# Nightly at 03:23 Stockholm time in winter (cron is UTC). Plan-only runs in
+# HCP Terraform; opens or updates a "drift" issue when anything differs.
+on:
+  schedule:
+    - cron: "23 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: drift-check
+  cancel-in-progress: false
+
+jobs:
+  drift:
+    name: drift
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Plan-only run in every workspace
+        id: check
+        continue-on-error: true
+        env:
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+          HCP_ORG: ${{ vars.HCP_ORG }}
+          WORKSPACES: >-
+            plat-governance plat-management plat-connectivity
+            lz-dev-baseline lz-dev-network lz-prod-baseline lz-prod-network
+          REPORT: drift-report.md
+        run: bash scripts/drift-check.sh
+
+      - name: Open or update the drift issue
+        if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh label create drift --color B60205 --description "Live Azure differs from main" 2>/dev/null || true
+          body="$(printf 'Drift check %s found differences or failed runs.\n\n%s\n\n[Workflow run](%s/%s/actions/runs/%s)\n' \
+            "$(date -u +%Y-%m-%d)" "$(cat drift-report.md 2>/dev/null || echo 'No report: the script failed before it finished.')" \
+            "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID")"
+          existing="$(gh issue list --label drift --state open --json number --jq '.[0].number // empty')"
+          if [[ -n "$existing" ]]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "Drift detected" --label drift --body "$body"
+          fi
+
+      - name: Fail the workflow when drift was found
+        if: steps.check.outcome == 'failure'
+        run: exit 1

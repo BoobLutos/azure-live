@@ -1,0 +1,44 @@
+# Decisions
+
+Short records of choices that shape this landing zone. Newest last.
+
+## 1. One subscription per platform function and environment
+
+Four subscriptions (management, connectivity, lz-dev, lz-prod) plus the original
+free-account subscription as sandbox. Environments are subscriptions under the
+same archetype, not separate management groups, following Azure landing zone
+guidance; prod gets stricter assignments at subscription scope.
+*Constraint found:* MCA accounts bought on Azure.com can create one subscription
+per 24 hours and five in total, so creation was staggered over four days.
+
+## 2. No stored secrets; OIDC everywhere
+
+HCP Terraform dynamic credentials sign in to Entra ID per run phase. Plan runs
+(including pull-request plans and the drift check) use one Reader identity; apply
+runs use one identity per blast radius. GitHub Actions has no Azure access at
+all. Bootstrap is the only thing run as a human, from Cloud Shell, because new
+tenants block device-code sign-in under security defaults.
+
+## 3. Least-privilege apply identities
+
+Governance is Owner at the `alz` management group (needed to assign roles to
+policy managed identities). Platform workspaces are Contributor on their own
+subscription. Landing-zone identities add RBAC Administrator with a condition
+that blocks granting or removing Owner, User Access Administrator and RBAC
+Administrator.
+
+## 4. Policy in three layers
+
+The HCP free tier allows one mandatory policy, so all OPA rules are bundled
+into one file. Azure Policy carries the authoritative rules inside Azure; OPA
+fails plans earlier with clearer messages; CI unit-tests the OPA rules.
+
+## 5. Cost guardrails before resources
+
+Budgets alert but don't stop spending, and cost data lags by hours, so prevention
+comes first: blocked expensive types, a single region, Defender on Free, a capped
+Log Analytics workspace. Each later phase lifts a block in a reviewed pull request.
+
+## 6. Platform and prod need confirmation; dev applies automatically
+
+The platform has no dev copy; a governance change affects every subscription.
