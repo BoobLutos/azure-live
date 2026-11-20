@@ -44,6 +44,28 @@ Phase 1 rules: no Firewall, Bastion, gateways, DDoS plan, Application Gateway,
 NAT gateway, public IPs or AKS; Sweden Central only; `env`, `owner` and `phase`
 tags; Defender plans on Free; Log Analytics capped at 0.15 GB/day and 30 days.
 
+In Azure Policy these are `Enforce-Locations`, `Enforce-RG-Locations`,
+`Deny-Costly-Resources` and `Require-RG-Tags` at `alz`, all enforced. The
+upstream Azure landing zones assignments are deployed report-only; see
+[lib/README.md](lib/README.md) for what was kept, what was left out and how to
+start enforcing.
+
+### Management groups
+
+```
+Tenant Root Group
+└── alz                       Enforce-Locations, Enforce-RG-Locations, Deny-Costly-Resources, Require-RG-Tags
+    ├── platform
+    │   ├── management        sub-platform-management-001
+    │   ├── connectivity      sub-platform-connectivity-001
+    │   └── identity
+    ├── landingzones
+    │   ├── corp              sub-lz-corp-dev-001, sub-lz-corp-prod-001
+    │   └── online
+    ├── sandbox               Azure subscription 1
+    └── decommissioned
+```
+
 ## Secrets and identifiers
 
 There are none in this repo. Azure sign-in is OIDC (HCP dynamic credentials).

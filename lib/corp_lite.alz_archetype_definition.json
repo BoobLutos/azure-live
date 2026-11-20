@@ -1,0 +1,12 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/Azure-Landing-Zones-Library/main/schemas/archetype_definition.json",
+  "name": "corp_lite",
+  "policy_assignments": [
+    "Deny-HybridNetworking",
+    "Deny-Public-Endpoints",
+    "Deny-Public-IP-On-NIC"
+  ],
+  "policy_definitions": [],
+  "policy_set_definitions": [],
+  "role_definitions": []
+}

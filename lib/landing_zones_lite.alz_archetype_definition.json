@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/Azure-Landing-Zones-Library/main/schemas/archetype_definition.json",
+  "name": "landing_zones_lite",
+  "policy_assignments": [
+    "Deny-IP-forwarding",
+    "Deny-MgmtPorts-Internet",
+    "Deny-Subnet-Without-Nsg",
+    "Deny-Storage-http",
+    "Deny-Priv-Esc-AKS",
+    "Deny-Privileged-AKS",
+    "Enforce-AKS-HTTPS",
+    "Enforce-GR-KeyVault"
+  ],
+  "policy_definitions": [],
+  "policy_set_definitions": [],
+  "role_definitions": []
+}

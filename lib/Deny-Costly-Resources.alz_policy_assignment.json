@@ -1,0 +1,39 @@
+{
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2024-04-01",
+  "name": "Deny-Costly-Resources",
+  "location": "${default_location}",
+  "dependsOn": [],
+  "properties": {
+    "description": "Blocks resource types that would create a standing cost. Later phases remove types from this list in a reviewed pull request.",
+    "displayName": "Deny costly resource types (Phase 1 cost guardrail)",
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/6c112d4e-5bc7-47ae-a041-ea2d9dccd749",
+    "enforcementMode": "Default",
+    "nonComplianceMessages": [
+      {
+        "message": "This resource type {enforcementMode} not be deployed during Phase 1 (cost guardrail)."
+      }
+    ],
+    "parameters": {
+      "listOfResourceTypesNotAllowed": {
+        "value": [
+          "microsoft.network/azurefirewalls",
+          "microsoft.network/bastionhosts",
+          "microsoft.network/virtualnetworkgateways",
+          "microsoft.network/expressroutecircuits",
+          "microsoft.network/ddosprotectionplans",
+          "microsoft.network/applicationgateways",
+          "microsoft.network/natgateways",
+          "microsoft.network/publicipaddresses",
+          "microsoft.containerservice/managedclusters"
+        ]
+      },
+      "effect": {
+        "value": "Deny"
+      }
+    },
+    "scope": "/providers/Microsoft.Management/managementGroups/placeholder",
+    "notScopes": [],
+    "definitionVersion": "2.*.*"
+  }
+}

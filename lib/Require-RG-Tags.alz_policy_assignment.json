@@ -1,0 +1,21 @@
+{
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2024-04-01",
+  "name": "Require-RG-Tags",
+  "location": "${default_location}",
+  "dependsOn": [],
+  "properties": {
+    "description": "Every resource group must carry the env, owner and phase tags.",
+    "displayName": "Require env, owner and phase tags on resource groups",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/placeholder/providers/Microsoft.Authorization/policySetDefinitions/Require-RG-Tags",
+    "enforcementMode": "Default",
+    "nonComplianceMessages": [
+      {
+        "message": "Resource groups {enforcementMode} have the env, owner and phase tags."
+      }
+    ],
+    "parameters": {},
+    "scope": "/providers/Microsoft.Management/managementGroups/placeholder",
+    "notScopes": []
+  }
+}
