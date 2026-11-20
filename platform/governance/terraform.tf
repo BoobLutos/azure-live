@@ -1,13 +1,17 @@
 terraform {
-  required_version = ">= 1.11"
+  required_version = ">= 1.12, < 2.0" # avm-ptn-alz needs 1.12+
 
   required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = ">= 4.0, < 6.0"
+    alz = {
+      source  = "azure/alz"
+      version = "~> 0.22"
+    }
+    azapi = {
+      source  = "Azure/azapi"
+      version = "~> 2.12"
     }
   }
 
-  # No backend or cloud block: this folder is the working directory of a
-  # VCS-driven HCP Terraform workspace, which supplies state and credentials.
+  # No backend or cloud block: this folder is the working directory of the
+  # VCS-driven plat-governance workspace, which supplies state and credentials.
 }

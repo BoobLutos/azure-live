@@ -42,3 +42,28 @@ Log Analytics workspace. Each later phase lifts a block in a reviewed pull reque
 ## 6. Platform and prod need confirmation; dev applies automatically
 
 The platform has no dev copy; a governance change affects every subscription.
+
+## 7. Azure landing zones via AVM, with a trimmed local library
+
+`avm-ptn-alz` with the upstream library keeps the hierarchy and policy content
+aligned with Microsoft's reference. The upstream root archetype alone is about
+200 resources and assumes paid services, so a local library (`lib/`) defines
+`*_lite` archetypes with only the content Phase 1 can use. Bootstrap owns the
+`alz` group; the architecture marks it `exists` and builds everything below it.
+
+## 8. Upstream policies start report-only
+
+Upstream ALZ assignments are deployed with `enforcementMode: DoNotEnforce`:
+they report compliance but block nothing. Each is switched to enforcing in its
+own pull request once its compliance results have been reviewed. Our own
+guardrails (location, costly types, resource-group tags) enforce from day one.
+
+## 9. Tag enforcement on resource groups only
+
+Azure Policy denies resource groups without `env`, `owner` and `phase`. Tags on
+individual resources are checked by OPA for anything Terraform creates.
+Enforcing tags on every resource in Azure Policy would block resources that
+Azure services create on their own. Known side effect: Azure can no longer
+auto-create `NetworkWatcherRG`, so Network Watcher is created explicitly (with
+tags) in the connectivity workspace. AKS node resource groups need the same
+attention in Phase 3.

@@ -1,0 +1,47 @@
+{
+  "type": "Microsoft.Authorization/policySetDefinitions",
+  "name": "Require-RG-Tags",
+  "properties": {
+    "displayName": "Require env, owner and phase tags on resource groups",
+    "description": "Denies resource groups without the env, owner and phase tags.",
+    "policyType": "Custom",
+    "metadata": {
+      "category": "Tags",
+      "version": "1.0.0",
+      "source": "azure-live/lib"
+    },
+    "parameters": {},
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "RequireTag-env",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/96670d01-0a4d-4649-9c89-2d3abc0a5025",
+        "parameters": {
+          "tagName": {
+            "value": "env"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "RequireTag-owner",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/96670d01-0a4d-4649-9c89-2d3abc0a5025",
+        "parameters": {
+          "tagName": {
+            "value": "owner"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionReferenceId": "RequireTag-phase",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/96670d01-0a4d-4649-9c89-2d3abc0a5025",
+        "parameters": {
+          "tagName": {
+            "value": "phase"
+          }
+        },
+        "groupNames": []
+      }
+    ]
+  }
+}

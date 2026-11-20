@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/Azure-Landing-Zones-Library/main/schemas/archetype_definition.json",
+  "name": "root_lite",
+  "policy_assignments": [
+    "Deny-Classic-Resources",
+    "Deny-UnmanagedDisk",
+    "Audit-ResourceRGLocation",
+    "Audit-UnusedResources",
+    "Enforce-Locations",
+    "Enforce-RG-Locations",
+    "Deny-Costly-Resources",
+    "Require-RG-Tags"
+  ],
+  "policy_definitions": [
+    "Audit-AzureHybridBenefit",
+    "Audit-Disks-UnusedResourcesCostOptimization",
+    "Audit-PublicIpAddresses-UnusedResourcesCostOptimization",
+    "Audit-ServerFarms-UnusedResourcesCostOptimization",
+    "Deny-LogicApp-Public-Network",
+    "Deny-MgmtPorts-From-Internet",
+    "Deny-Subnet-Without-Nsg",
+    "Deny-VNET-Peer-Cross-Sub",
+    "Deploy-Vm-autoShutdown"
+  ],
+  "policy_set_definitions": [
+    "Audit-UnusedResourcesCostOptimization",
+    "Deny-PublicPaaSEndpoints",
+    "Enforce-ALZ-Decomm",
+    "Enforce-ALZ-Sandbox",
+    "Enforce-Guardrails-KeyVault_20260203",
+    "Require-RG-Tags"
+  ],
+  "role_definitions": []
+}
