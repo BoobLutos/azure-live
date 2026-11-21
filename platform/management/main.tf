@@ -69,3 +69,6 @@ module "baseline_sandbox" {
   budget_amount              = 2
   log_analytics_workspace_id = azurerm_log_analytics_workspace.central.id
 }
+
+# Check that activity-log ingestion stays free (run in the workspace's Logs):
+#   AzureActivity | summarize GB = sum(_BilledSize) / 1e9 by SubscriptionId, _IsBillable
