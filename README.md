@@ -66,11 +66,28 @@ Tenant Root Group
     └── decommissioned
 ```
 
+## Every subscription's baseline
+
+`modules/subscription-baseline` gives each subscription a monthly budget (alerts
+at 50/80/100% actual and 100% forecast), activity-log export to the central Log
+Analytics workspace, a Service Health alert, and Defender for Cloud plans pinned
+to Free. Budgets: management, connectivity and sandbox 2, dev 5, prod 10.
+
+| Subscription | Applied by |
+|---|---|
+| management, sandbox | plat-management |
+| connectivity | plat-connectivity |
+| lz_dev / lz_prod | lz-dev-baseline / lz-prod-baseline |
+
+`modules/platform-conventions` holds the names and IDs several workspaces need
+(region, central workspace ID), so no workspace reads another's state.
+
 ## Secrets and identifiers
 
 There are none in this repo. Azure sign-in is OIDC (HCP dynamic credentials).
 Tenant, subscription and client IDs live in the HCP variable set
-`azure-alz-common`. The only GitHub secret is `TFE_TOKEN`, used by the drift check.
+`azure-alz-common`, and so does the alert address (`TF_VAR_alert_email`,
+sensitive). The only GitHub secret is `TFE_TOKEN`, used by the drift check.
 
 ## Repository settings (one-time)
 
@@ -83,6 +100,7 @@ Tenant, subscription and client IDs live in the HCP variable set
 
 ```
 platform/ landingzones/   workspace folders (one per HCP workspace)
+modules/                  local modules shared by the workspaces
 lib/                      ALZ library overrides (archetypes, policy assignments)
 policies/opa/             guardrails.rego + unit tests
 scripts/                  ruleset and drift-check helpers
