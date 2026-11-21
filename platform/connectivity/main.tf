@@ -1,10 +1,25 @@
-# plat-connectivity: hub virtual network, NSGs, route tables.
-#
-# Heartbeat only: no resources yet. Proves the workspace signs in to Azure and
-# targets the subscription it should.
+# plat-connectivity: subscription baseline for connectivity. The hub network comes next.
 
-locals {
-  subscription_key = "connectivity"
+module "conventions" {
+  source = "../../modules/platform-conventions"
+
+  management_subscription_id = var.subscription_ids["management"]
 }
 
-data "azurerm_client_config" "current" {}
+module "baseline" {
+  source = "../../modules/subscription-baseline"
+
+  name            = "connectivity"
+  subscription_id = var.subscription_ids["connectivity"]
+  tags = {
+    env   = "platform"
+    owner = "platform"
+    phase = "1-landing-zone"
+  }
+  alert_email   = var.alert_email
+  budget_amount = 2
+
+  # Central workspace in the management subscription. Bootstrap grants this
+  # workspace's identity the narrow "Log Analytics Workspace Linker" role on it.
+  log_analytics_workspace_id = module.conventions.log_analytics_workspace_id
+}
