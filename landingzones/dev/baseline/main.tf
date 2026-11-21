@@ -1,10 +1,25 @@
-# lz-dev-baseline: budget, Defender plan tiers, tags, activity-log export for dev.
-#
-# Heartbeat only: no resources yet. Proves the workspace signs in to Azure and
-# targets the subscription it should.
+# lz-dev-baseline: subscription baseline for dev (budget, activity-log export, Service Health alert, Defender Free).
 
-locals {
-  subscription_key = "lz_dev"
+module "conventions" {
+  source = "../../../modules/platform-conventions"
+
+  management_subscription_id = var.subscription_ids["management"]
 }
 
-data "azurerm_client_config" "current" {}
+module "baseline" {
+  source = "../../../modules/subscription-baseline"
+
+  name            = "dev"
+  subscription_id = var.subscription_ids["lz_dev"]
+  tags = {
+    env   = "dev"
+    owner = "platform"
+    phase = "1-landing-zone"
+  }
+  alert_email   = var.alert_email
+  budget_amount = 5
+
+  # Central workspace in the management subscription. Bootstrap grants this
+  # workspace's identity the narrow "Log Analytics Workspace Linker" role on it.
+  log_analytics_workspace_id = module.conventions.log_analytics_workspace_id
+}

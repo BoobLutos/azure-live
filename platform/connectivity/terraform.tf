@@ -6,6 +6,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 4.0, < 6.0"
     }
+    azapi = {
+      source  = "Azure/azapi"
+      version = ">= 2.0, < 3.0"
+    }
   }
 
   # No backend or cloud block: this folder is the working directory of a
