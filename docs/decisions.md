@@ -67,3 +67,21 @@ Azure services create on their own. Known side effect: Azure can no longer
 auto-create `NetworkWatcherRG`, so Network Watcher is created explicitly (with
 tags) in the connectivity workspace. AKS node resource groups need the same
 attention in Phase 3.
+
+## 10. Each subscription's baseline is applied by its own workspace
+
+Budgets, activity-log export, Service Health alerts and Defender pins live in one
+local module, called by the workspace that owns the subscription. Each
+subscription gets its own action group, so no alert depends on another
+subscription. Budgets email the alert address directly. The only
+cross-subscription link is the activity-log export to the central workspace:
+bootstrap grants the connectivity and landing-zone identities a custom role
+with just `workspaces/read` and `workspaces/sharedKeys/action` on the
+management subscription. Shared names and IDs come from
+`modules/platform-conventions` rather than from another workspace's state.
+
+## 11. Resource providers are registered at apply time
+
+The plan identity is Reader and can't register providers, so registration is an
+`azapi_resource_action` (POST `.../register`) that only runs during apply. The
+azurerm provider has automatic registration switched off.
