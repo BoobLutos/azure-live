@@ -1,7 +1,6 @@
 # plat-management: central Log Analytics workspace, plus the subscription
 # baseline (budget, activity-log export, Service Health alert, Defender Free)
 # for the management and sandbox subscriptions.
-##
 
 module "conventions" {
   source = "../../modules/platform-conventions"
