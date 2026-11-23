@@ -72,3 +72,4 @@ module "baseline_sandbox" {
 
 # Check that activity-log ingestion stays free (run in the workspace's Logs):
 #   AzureActivity | summarize GB = sum(_BilledSize) / 1e9 by SubscriptionId, _IsBillable
+# ingress test
