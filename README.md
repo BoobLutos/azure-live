@@ -20,17 +20,26 @@ governance → management → connectivity → {dev, prod} baseline → network.
 
 ## How a change flows
 
-1. Branch, change, open a pull request.
-2. GitHub Actions (`pr-checks`): `terraform` (fmt, validate, tflint), `policy-tests`
-   (OPA unit tests), `secrets` (gitleaks). All three are required by the
-   `protect-main` ruleset.
-3. HCP Terraform runs a speculative plan for every affected workspace, signed in
-   with the Reader identity, and checks it against the mandatory `alz-guardrails`
-   policy. Results appear as status checks on the pull request.
-4. Merge (squash or rebase; history stays linear). Dev applies automatically;
-   platform and prod wait for **Confirm & apply** in HCP.
-5. Every night, `drift-check` queues plan-only runs and opens a `drift` issue if
+1. Branch from a freshly pulled `main`, change, open a pull request.
+2. GitHub Actions `pr-checks`: `terraform` (fmt, validate, tflint), `policy-tests`
+   (OPA unit tests), `secrets` (gitleaks).
+3. GitHub Actions `hcp-runs` uploads the code to every affected HCP workspace
+   as a speculative plan (Reader identity, mandatory `alz-guardrails` policy)
+   and comments each plan on the PR. `hcp-plans` sums them up.
+4. All four checks are required by the `protect-main` ruleset. Merge with
+   squash; history stays linear.
+5. On merge, `hcp-runs` uploads the code again and starts a run in each affected
+   workspace, in apply order. Dev applies automatically; platform and prod wait
+   for **Confirm & apply** in HCP. Confirm upstream workspaces first
+   (management before connectivity before the spokes).
+6. Every night, `drift-check` queues plan-only runs and opens a `drift` issue if
    live Azure differs from `main`.
+
+Which workspaces a change affects is defined once, in
+`.github/hcp-workspaces.json`. To re-run workspaces by hand: Actions →
+`hcp-runs` → Run workflow (names, or `all`).
+
+Why uploads instead of HCP pulling from GitHub: see decision 12.
 
 ## Guardrails (three layers)
 
@@ -87,7 +96,8 @@ to Free. Budgets: management, connectivity and sandbox 2, dev 5, prod 10.
 There are none in this repo. Azure sign-in is OIDC (HCP dynamic credentials).
 Tenant, subscription and client IDs live in the HCP variable set
 `azure-alz-common`, and so does the alert address (`TF_VAR_alert_email`,
-sensitive). The only GitHub secret is `TFE_TOKEN`, used by the drift check.
+sensitive). The only GitHub secret is `TFE_TOKEN` (an Actions secret and, for Dependabot
+PRs, a Dependabot secret), used by `hcp-runs` and the drift check.
 
 ## Repository settings (one-time)
 

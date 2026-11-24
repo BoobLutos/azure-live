@@ -1,0 +1,8 @@
+# Uploaded to HCP Terraform by .github/workflows/hcp-runs.yml: only what runs need.
+.git/
+.github/
+.terraform/
+docs/
+scripts/
+policies/
+*.md

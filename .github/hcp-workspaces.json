@@ -1,0 +1,12 @@
+{
+  "_comment": "HCP workspace => repo paths that affect it, in apply order. Read by scripts/affected-workspaces.sh. Keep in sync with bootstrap/hcp.tf.",
+  "workspaces": [
+    { "name": "plat-governance", "paths": ["platform/governance/", "lib/"] },
+    { "name": "plat-management", "paths": ["platform/management/", "modules/"] },
+    { "name": "plat-connectivity", "paths": ["platform/connectivity/", "modules/"] },
+    { "name": "lz-dev-baseline", "paths": ["landingzones/dev/baseline/", "modules/"] },
+    { "name": "lz-dev-network", "paths": ["landingzones/dev/network/", "modules/"] },
+    { "name": "lz-prod-baseline", "paths": ["landingzones/prod/baseline/", "modules/"] },
+    { "name": "lz-prod-network", "paths": ["landingzones/prod/network/", "modules/"] }
+  ]
+}
