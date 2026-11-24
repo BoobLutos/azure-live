@@ -85,3 +85,18 @@ management subscription. Shared names and IDs come from
 The plan identity is Reader and can't register providers, so registration is an
 `azapi_resource_action` (POST `.../register`) that only runs during apply. The
 azurerm provider has automatic registration switched off.
+
+## 12. API-driven workspaces: GitHub Actions uploads, HCP no longer pulls
+
+From 2026-11-21, HCP could no longer fetch any commit for this organization
+(`SIC-001` on every run). The same repository and GitHub App worked in another
+organization, so the fault was inside HCP; reinstalling the GitHub App didn't
+help (reported on the HashiCorp forum). The workspaces became API-driven:
+`hcp-runs` uploads the code with HashiCorp's `tfc-workflows-github` actions,
+speculatively for pull requests and for real on merge. Identities, policy,
+run triggers and confirmations are unchanged. Bootstrap keeps the GitHub App
+link behind `vcs_driven`, so switching back is one variable.
+
+Trade-off: GitHub Actions now holds an HCP token (owners team token; the free
+tier has no narrower team). It is a repository and Dependabot secret, never
+exposed to forks.
