@@ -92,7 +92,7 @@ jobs:
         with:
           plan: ${{ steps.run.outputs.plan_id }}
 
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@v9
         continue-on-error: true # Dependabot PRs get a read-only token; the check below still decides
         env:
           WORKSPACE: ${{ matrix.workspace }}
